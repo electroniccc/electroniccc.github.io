@@ -5,6 +5,8 @@ const [
 
 const CELL_COUNT = 6;
 
+const CANVS_WIDTH = 500;
+
 function addClass(element, className) {
 	if (!element || !className) {
 		return;
