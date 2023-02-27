@@ -1,6 +1,8 @@
 ## What is this
 A game that was often played by the elderly and children in the village during my childhood. It was also one of the entertainment activities during my primary and middle school breaks. Recently, I found that I had almost forgotten the rules of these games, so I created this small game to preserve them. 
 
+[https://electroniccc.github.io/WolfEatSheep/](https://electroniccc.github.io/WolfEatSheep/)
+
 ## How to
 Rules are blow: 
 1. Sheep can move one step once; </p>

@@ -313,6 +313,8 @@ class WolfSheepGame {
 		if(locations[fromX][fromY]%2==0) {
 			// target is sheep and distance is 2
 			if(locations[toX][toY]%2 && this.locDistance(fromX, fromY, toX, toY) == 2) {
+				if(fromX == toX && locations[fromX][Math.floor((fromY+toY)/2)]) return false;
+				if(fromY == toY && locations[Math.floor((fromX+toX)/2)][toY]) return false;
 				return true;
 			}
 		}
