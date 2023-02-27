@@ -112,8 +112,10 @@ function main() {
 	let lan = navigator.language.toLowerCase();
 	if(lan.indexOf('zh') > -1) {
 		document.getElementById('rule-zh').style.display = 'block';
+		document.title = '狼吃羊'
 	} else {
 		document.getElementById('rule-en').style.display = 'block';
+		document.title = 'Wolf eat sheep'
 	}
 }
 
