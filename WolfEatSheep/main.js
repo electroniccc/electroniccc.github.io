@@ -35,7 +35,6 @@ function onGameOver(winner, steps) {
 function onDlgClicked(evt, game) {
 	if(evt.target.id == 'sheep-btn') {
 		game.setUserRole(SHEEP);
-		document.getElementById('canvas').classList.add('user-is-sheep');
 	} else if(evt.target.id == 'wolf-btn') {
 		game.setUserRole(WOLF);
 	} else {

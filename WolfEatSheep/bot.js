@@ -85,7 +85,7 @@ class GameBot {
 		wolfAvalCount = possibleSteps.length;
 
 		if(depth <= 0 || curSheepCount <= 0 || wolfAvalCount <= 0) {
-			return hopeSheepWin ? wolfAvalCount * 100 + curSheepCount * 10 + stepCount :
+			return hopeSheepWin ? wolfAvalCount * 90 + curSheepCount * 30 + stepCount :
 				(curSheepCount-18) * 20 - wolfAvalCount * 10 - stepCount;
 		} 
 

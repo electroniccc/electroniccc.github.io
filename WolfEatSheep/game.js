@@ -50,6 +50,7 @@ class WolfSheepGame {
 		this.userRole = role;
 		if(this.userRole == SHEEP) {
 			this.bot = new GameBotWolf(this);
+			this.canvas.style.transform += 'rotateZ(180deg)';
 			this.draw();
 		} else {
 			this.bot = new GameSheepBot(this);
@@ -84,16 +85,18 @@ class WolfSheepGame {
 	}
 
 	reset() {
+		this.userRole = WOLF;
+		this.canvas.style.transform = this.canvas.style.transform.replace('rotateZ(180deg)', '');
 		this.prepareLoc();
 		this.draw();
 		this.running = false;
 		this.stepCount = 0;
 
-		if(this.userRole == SHEEP) {
-			this.bot = new GameBotWolf(this);
-		} else {
-			this.bot = new GameSheepBot(this);
-		}
+		// if(this.userRole == SHEEP) {
+		// 	this.bot = new GameBotWolf(this);
+		// } else {
+		// 	this.bot = new GameSheepBot(this);
+		// }
 	}
 
 	draw() {
