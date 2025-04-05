@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Canvas 动画示例</title>
+    <link href="https://unpkg.com/uplot@1.6.27/dist/uPlot.min.css" rel="stylesheet">
+
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #loadingIcon.active {
+            border: 3px solid #ccc;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="800" height="800"></canvas>
+    <div id="loadingIcon" style="width: 20px; height: 20px;"></div>
+    <div style="text-align: center; margin-top: 20px;">
+        <span>能量初始值：</span>
+        <input id="initEnergy" type="number" value="1" min="1" max="10000" step="1">
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <span>实时动画迭代：</span>
+        <button id="toggleButton">开始</button>
+        <label>
+            间隔(ms):
+            <input type="number" id="intervalInput" value="500" min="50" max="5000" step="50">
+        </label>
+    </div>
+    <div style="text-align: center; margin-top:20px;">
+        <span>快速多次迭代：</span>
+        <input type="number" id="iterCount" value="10000" min="1" max="1000000" step="10000">
+        <button id="doMultiIter">迭代</button>
+    </div>
+    <div style="text-align: center; margin-top:20px;">
+        <label>能量频率分布</label>
+        <button id="updateHistogram">更新</button>
+    </div>
+
+    <div id="histogram" style="width: 800px; height: 250px; margin-top: 20px;"></div>
+
+    <script src="https://unpkg.com/uplot@1.6.27/dist/uPlot.iife.min.js"></script>
+    <script>
+        function showLoading() {
+            document.getElementById("loadingIcon").classList.add("active");
+        }
+
+        function removeLoading() {
+            document.getElementById("loadingIcon").classList.remove("active");
+        }
+
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const cols = 20;
+        const rows = 20;
+        const spacing = 13;
+        const radius = 13;
+        const startX = 13 + 1;
+        const startY = 13 + 1;
+
+        canvas.width = (cols - 1) * (radius * 2 + spacing) + radius * 2 + 2;
+        canvas.height = (rows - 1) * (radius * 2 + spacing) + radius * 2 + 2;
+
+        const initEnergy = parseInt(document.getElementById("initEnergy").value) || 1;
+        // 初始化每个格点能量为 1
+        let grid = Array.from({ length: rows }, () =>
+            Array.from({ length: cols }, () => initEnergy)
+        );
+
+
+        function drawLatticeGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const x = startX + col * (spacing + radius * 2);
+                    const y = startY + row * (spacing + radius * 2);
+                    const energy = grid[row][col];
+
+                    // 圆圈大小跟颜色可以以后和能量关联
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = energy > 0 ? "#3498db" : "#ccc";
+                    ctx.fill();
+                    ctx.strokeStyle = ctx.fillStyle;
+                    ctx.stroke();
+
+                    // 画数字（能量值）
+                    ctx.fillStyle = "white";
+                    ctx.font = "13px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(energy, x, y);
+                }
+            }
+        }
+
+        function getRandomNonZeroCell() {
+            let candidates = [];
+            grid.forEach((rowArr, row) => {
+                rowArr.forEach((val, col) => {
+                    if (val > 0) candidates.push([row, col]);
+                });
+            });
+            return candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+        }
+
+        function getRandomCell() {
+            const row = Math.floor(Math.random() * rows);
+            const col = Math.floor(Math.random() * cols);
+            return [row, col];
+        }
+
+        function step(reDraw = false) {
+            iterStarted = true;
+            const from = getRandomNonZeroCell();
+            const to = getRandomCell();
+            if (!from || !to) return;
+
+            const [fromRow, fromCol] = from;
+            const [toRow, toCol] = to;
+
+            if (fromRow === toRow && fromCol === toCol) return;
+
+            grid[fromRow][fromCol] -= 1;
+            grid[toRow][toCol] += 1;
+
+            if (reDraw) {
+                drawLatticeGrid();
+            }
+        }
+
+        let iterStarted = false;
+        let histChart = null;
+        drawLatticeGrid();
+        initHistogram();
+        updateHistogram();
+        const initEnergyInput = document.getElementById("initEnergy");
+        initEnergyInput.addEventListener("change", () => {
+            if (iterStarted) {
+                stopAnimation();
+                iterStarted = false;
+            }
+            const newInitEnergy = parseInt(initEnergyInput.value) || 1;
+            grid = Array.from({ length: rows }, () =>
+                Array.from({ length: cols }, () => newInitEnergy)
+            );
+            drawLatticeGrid();
+            updateHistogram();
+        });
+
+
+        // 控制动画定时器
+        let isRunning = false;
+        let intervalId = null;
+
+        const toggleBtn = document.getElementById("toggleButton");
+        const intervalInput = document.getElementById("intervalInput");
+
+        function startAnimation() {
+            const delay = parseInt(intervalInput.value);
+            intervalId = setInterval(step, delay, true);
+            isRunning = true;
+            toggleBtn.textContent = "暂停";
+        }
+
+        function stopAnimation() {
+            clearInterval(intervalId);
+            isRunning = false;
+            toggleBtn.textContent = "开始";
+        }
+
+        toggleBtn.addEventListener("click", () => {
+            isRunning ? stopAnimation() : startAnimation();
+        });
+
+        // 改变间隔时间时，若动画正在运行就重启动画
+        intervalInput.addEventListener("change", () => {
+            if (isRunning) {
+                stopAnimation();
+                startAnimation();
+            }
+        });
+
+        const multiIterBtn = document.getElementById("doMultiIter");
+        const iterCountInput = document.getElementById("iterCount");
+        multiIterBtn.addEventListener("click", () => {
+            if (isRunning) {
+                stopAnimation();
+            }
+            showLoading();
+            const iterCount = parseInt(iterCountInput.value) || 1;
+            for (let i = 0; i < iterCount; i++) {
+                step(false);
+            }
+            drawLatticeGrid();
+            removeLoading();
+            updateHistogram();
+        });
+
+        function initHistogram() {
+            const opts = {
+                title: "能量频率分布",
+                width: 800,
+                height: 250,
+                scales: {
+                    x: {
+                        time: false // 非时间轴，重要！
+                    }
+                },
+                series: [
+                    {
+                        label: "能量",     // x轴能量值
+                    },
+                    {
+                        label: "频数",     // y轴出现次数
+                        stroke: "#2980b9",
+                        fill: "rgba(52, 152, 219, 0.3)",
+                        points: { show: true },
+                    }
+                ],
+                axes: [
+                    {
+                        label: "能量值",
+                        stroke: "#333"
+                    },
+                    {
+                        label: "频数",
+                        stroke: "#333"
+                    }
+                ]
+            };
+
+            const [x, y] = getHistogramData();
+            histChart = new uPlot(opts, [x, y], document.getElementById("histogram"));
+        }
+
+        // 获取能量频率数据
+        function getHistogramData() {
+            const freq = {};
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const energy = grid[r][c];
+                    freq[energy] = (freq[energy] || 0) + 1;
+                }
+            }
+
+            const keys = Object.keys(freq).map(Number).sort((a, b) => a - b);
+            const counts = keys.map(k => freq[k]);
+            return [keys, counts];
+        }
+
+        // 更新图表
+        function updateHistogram() {
+            const [x, y] = getHistogramData();
+            histChart.setData([x, y]);
+        }
+
+        const updateHistogramBtn = document.getElementById("updateHistogram");
+        updateHistogramBtn.addEventListener("click", () => {
+            updateHistogram();
+        });
+    </script>
+</body>
+
+</html>
