@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title></title>
+</head>
+
+<body>
+	<div id="overview">
+		<div>
+			<div style="display: flex; justify-content: center; align-items: center;">
+				<div><canvas id="canvas"></canvas></div>
+			</div>
+		</div>
+		<div id="control" class="control">
+			<div><button class="gray-button" role="button" id="btn-start"><span class="text i18n">Start</span></button></div>
+			<div><button class="gray-button" role="button" id="btn-reset"><span class="text i18n">Reset</span></button></div>
+		</div>
+		<div id="rule" class="rule">
+			<div id="rule-zh" style="display: none;">
+				<p>这是一个狼与羊的游戏。</p>
+				<p>小时候在村里的老人和小孩经常玩的一个游戏。也是我小学和初中时，课间的娱乐项目之一。最近发现这些游戏规则快被我忘掉了，因此做成这个小游戏保留下来。</p>
+				<p>规则说明：</p>
+				<p>1. 羊每次可以移动一步；</p>
+				<p>2. 狼每次可以移动一步或者两步，当狼和羊的距离为2时，狼可以移动两步吃掉这只羊，否则狼也只能移动一步；</p>
+				<p>3. 当狼没有办法移动时，羊获胜；</p>
+				<p>4. 当羊被吃光时，狼获胜。</p>
+				<p>玩得开心！</p>
+			</div>
+			<div id="rule-en" style="display: none">
+				<p>This is a game between wolf and sheep.</p>
+				<p>A game that was often played by the elderly and children in the village during my childhood. It was also one of the entertainment activities during my primary and middle school breaks. Recently, I found that I had almost forgotten the rules of these games, so I created this small game to preserve them.</p>
+				<p>Rules are blow: </p>
+				<p>1. Sheep can move one step once; </p>
+				<p>2. Wolf can move one or two steps once. When the distance of wolf and sheep is 2, the sheep can be ate by wolf. Otherwise, wolf can move only one step once. </p>
+				<p>3. When both two wolf can not move, sheep win. </p>
+				<p>4. When there's no sheep left, wolf win. </p>
+				<p>Enjoy!</p>
+			</div>
+		</div>
+		<div style="font-size: 0.75rem; display: flex; justify-content: center; color: #bebebe">Created by &nbsp; <a style="color: #bebebe" href="https://github.com/electroniccc">electroniccc</a></div>
+	</div>
+	<!-- 对话框容器 -->
+	<div class="dialog-container" id="choose-dialog">
+		<!-- 对话框 -->
+		<div id="dialog" class="dialog">
+			<!-- 对话框标题 -->
+			<h2 class="dialog-header i18n">Wolf🐺 or Sheep🐏?</h2>
+			<!-- 对话框内容 -->
+			<!-- <div class="dialog-body">
+				<p>对话框内容</p>
+			</div> -->
+			<!-- 对话框按钮 -->
+			<button id="wolf-btn" class="dialog-button 1i8n">Wolf🐺</button>
+			<button id="sheep-btn" class="dialog-button i18n">Sheep🐏</button>
+		</div>
+	</div>
+	<div class="dialog-container" id="dialog-result">
+		<!-- 对话框 -->
+		<div class="dialog">
+			<!-- 对话框标题 -->
+			<h2 id="result-header" class="dialog-header"></h2>
+			<!-- 对话框内容 -->
+			<!-- <div class="dialog-body">
+				<p>对话框内容</p>
+			</div> -->
+			<!-- 对话框按钮 -->
+			<button id="ok-btn" class="dialog-button i18n">Ok</button>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="common.js"></script>
+<script type="text/javascript" src="bot.js"></script>
+<script type="text/javascript" src="game.js"></script>
+<script type="text/javascript" src="i18n.js"></script>
+<script type="text/javascript" src="main.js"></script>
+
+</html>
